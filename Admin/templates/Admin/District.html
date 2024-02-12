@@ -28,6 +28,8 @@
         <tr>
             <td>{{forloop.counter}}</td>
             <td>{{i.dis.district_name}}</td>
+            <td><a href="{% url 'webadmin:editdistrict' i.id %}">Edit</a></td>
+
             <td></td>
         </tr>
         {% endfor %}

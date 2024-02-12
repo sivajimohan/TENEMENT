@@ -28,6 +28,9 @@
         <tr>
             <td>{{forloop.counter}}</td>
             <td>{{i.t.type_name}}</td>
+            <td><a href="{% url 'webadmin:edittype' i.id %}">Edit</a></td>
+            <td><a href="{% url 'webadmin:deltype' i.id %}">Delete</a></td>
+
             <td></td>
         </tr>
         {% endfor %}

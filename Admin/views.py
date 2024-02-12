@@ -21,6 +21,16 @@ def District(request):
         return redirect("webadmin:District")
     else:
         return render(request,"Admin/District.html",{"district":dis_data})
+
+        
+def editdistrict(request,id):
+    dis=db.collection("tbl_district").document(id).get().to_dict()
+    if request.method=="POST":
+        data={"district_name":request.POST.get("District")}
+        db.collection("tbl_district").document(id).update(data)
+        return redirect("webadmin:district")
+    else:
+        return render(request,"Admin/District.html",{"dis_data":dis})
    
 def Place(request):
     dis=db.collection("tbl_district").stream()
@@ -42,6 +52,10 @@ def Place(request):
     else:
         return render(request,"Admin/Place.html",{"district":dis_data,"place":result})
 
+def delPlace(request,id):
+    db.collection("tbl_place").document(id).delete()
+    return redirect("webadmin:Place")
+
 
 
 def type(request):
@@ -56,7 +70,21 @@ def type(request):
         return redirect("webadmin:type")
     else:
         return render(request,"Admin/Type.html",{"type":t_data})
+
+
+def edittype(request,id):
+    t=db.collection("tbl_type").document(id).get().to_dict()
+    if request.method=="POST":
+        data={"type_name":request.POST.get("type")}
+        db.collection("tbl_type").document(id).update(data)
+        return redirect("webadmin:type")
+    else:
+        return render(request,"Admin/Type.html",{"t_data":t})        
    
+
+def deltype(request,id):
+    db.collection("tbl_type").document(id).delete()
+    return redirect("webadmin:type")
 
 
 
