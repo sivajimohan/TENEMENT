@@ -10,4 +10,5 @@ urlpatterns = [
     path ('Place/',views.Place,name="Place"),
     path('delPlace/<str:id>',views.delPlace,name="delPlace"),
     path ('admin/',views.admin,name="admin"),
+    path ('homepage/',views.Homepage,name="homepage"),
 ]

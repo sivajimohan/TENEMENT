@@ -23,10 +23,41 @@ authe = firebase.auth()
 st = firebase.storage()
 
 def Login(request):
-    return render(request,"Guest/Login.html")
+    Workerid =""
+    userid=""
+    adminid=""
+    if request.method == "POST":
+        email = request.POST.get("Email")
+        password = request.POST.get("Password")
+        try:
+            data = authe.sign_in_with_email_and_password(email,password)
+        except:
+            return render(request,"Guest/Login.html",{"msg":"Error in Email Or Password"})
+        admin=db.collection("tbl_admin").where("admin_id","==",data["localId"]).stream() 
+        for a in admin:
+            adminid=a.id   
+        worker=db.collection("tbl_Worker").where("Worker_id","==",data["localId"]).stream()    
+        for w in worker:
+            Workerid=w.id  
+        user=db.collection("tbl_User").where("User_id","==",data["localId"]).stream()    
+        for u in user:
+            userid=u.id
+        if Workerid:
+            request.session["wid"]=Workerid    
+            return redirect("webworker:Homepage")
+        elif userid:
+            request.session["uid"]=userid
+            return redirect("webuser:Homepage")   
+        elif adminid:
+            request.session["aid"]=adminid 
+            return redirect("webadmin:Homepage")  
+        else:
+            return render(request,"Guest/Login.html",{"msg":"error"})    
+    else:
+       return render(request,"Guest/Login.html")
 
 
-def CustomerRegistration(request):
+def UserRegistration(request):
     dis=db.collection("tbl_district").stream()
     dis_data=[]
     for i in dis:
@@ -36,16 +67,49 @@ def CustomerRegistration(request):
         email = request.POST.get("Email")
         password = request.POST.get("Password")
         try:
-            Customer = firebase_admin.auth.create_user(email=email,password=password)
+            User = firebase_admin.auth.create_user(email=email,password=password)
         except (firebase_admin._auth_utils.EmailAlreadyExistsError,ValueError) as error:
-            return render(request,"Guest/CustomerRegistration.html",{"msg":error})
+            return render(request,"Guest/UserRegistration.html",{"msg":error})
       
         image=request.FILES.get("Photo")
         if image:
-            path="CustomerPhoto/"+image.name
+            path="UserPhoto/"+image.name
             st.child(path).put(image)
             cp_url=st.child(path).get_url(None)
-        db.collection("tbl_Customer").add({"Customer_Name":request.POST.get("Name"),"Customer_Email":request.POST.get("Email"),"Customer_Contact":request.POST.get("Contact"),"Customer_Address":request.POST.get("Address"),"place_id":request.POST.get("place"),"Customer_Photo":cp_url})
-        return render(request,"Guest/CustomerRegistration.html")
+        db.collection("tbl_User").add({"User_id":User.uid,"User_Name":request.POST.get("Name"),"User_Email":request.POST.get("Email"),"User_Contact":request.POST.get("Contact"),"User_Address":request.POST.get("Address"),"place_id":request.POST.get("place"),"User_Photo":cp_url})
+        return render(request,"Guest/UserRegistration.html")
     else:    
-        return render(request,"Guest/CustomerRegistration.html",{"district":dis_data})    
+        return render(request,"Guest/UserRegistration.html",{"district":dis_data})    
+
+def AjaxPlace(request):
+    place=db.collection("tbl_place").where("district_id","==",request.GET.get("did")).stream()
+    place_data=[]
+    for p in place:
+        place_data.append({"place":p.to_dict(),"id":p.id})
+    return render(request,"Guest/AjaxPlace.html",{"place":place_data})
+
+
+def WorkerRegistration(request):
+    dis=db.collection("tbl_district").stream()
+    dis_data=[]
+    for i in dis:
+        data=i.to_dict()
+        dis_data.append({"dis":data,"id":i.id})
+    if request.method=="POST":
+        email = request.POST.get("Email")
+        password = request.POST.get("Password")
+        try:
+            Worker = firebase_admin.auth.create_user(email=email,password=password)
+        except (firebase_admin._auth_utils.EmailAlreadyExistsError,ValueError) as error:
+            return render(request,"Guest/WorkerRegistration.html",{"msg":error})
+      
+        image=request.FILES.get("Photo")
+        if image:
+            path="WorkerPhoto/"+image.name
+            st.child(path).put(image)
+            wp_url=st.child(path).get_url(None)
+        db.collection("tbl_Worker").add({"Worker_id":Worker.uid,"Worker_Name":request.POST.get("Name"),"Worker_Email":request.POST.get("Email"),"Worker_Contact":request.POST.get("Contact"),"Worker_Address":request.POST.get("Address"),"place_id":request.POST.get("place"),"Worker_Photo":wp_url})
+        return render(request,"Guest/WorkerRegistration.html")
+    else:    
+        return render(request,"Guest/WorkerRegistration.html",{"district":dis_data})    
+

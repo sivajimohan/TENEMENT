@@ -88,7 +88,8 @@ def deltype(request,id):
 
 
 
-
+def Homepage(request):
+    return render(request,"Admin/Homepage.html")
 
 
 def admin(request):

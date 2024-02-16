@@ -5,5 +5,6 @@ urlpatterns = [
     path ('user/',views.user,name="user"),
     path ('request/',views.request,name="request"),
     path ('review/',views.review,name="review"),
-    path ('complaint/',views.complaint,name="complaint"),
+    path ('Complains/',views.Complains,name="Complains"),
+    path ('Homepage/',views.Homepage,name="Homepage"),
 ]
