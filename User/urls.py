@@ -7,4 +7,8 @@ urlpatterns = [
     path ('review/',views.review,name="review"),
     path ('Complains/',views.Complains,name="Complains"),
     path ('Homepage/',views.Homepage,name="Homepage"),
+    path ('MyProfile/',views.MyProfile,name="MyProfile"),
+    path ('ChangePassword/',views.ChangePassword,name="ChangePassword"),
+    path ('EditProfile/',views.EditProfile,name="EditProfile"),
+
 ]

@@ -131,3 +131,11 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 cred =credentials.Certificate('db/tenement-b24c0-firebase-adminsdk-2efar-c023a09d50.json')
 app=firebase_admin.initialize_app(cred)
+
+
+
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'tenement210@gmail.com'
+EMAIL_HOST_PASSWORD = 'ydljrltayxpesvex'
