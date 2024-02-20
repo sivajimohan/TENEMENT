@@ -42,6 +42,47 @@ def workpost(request):
     return render(request,"Worker/Workpost.html")
 def Workgallery(request):
     return render(request,"Worker/Workgallery.html")
+
+def Complains(request):
+    com=db.collection("tbl_Complains").stream()
+    com_data=[]
+    for i in com:
+        data=i.to_dict()
+        com_data.append({"com":data,"id":i.id})
+    if request.method=="POST":
+        data={"Complains_name":request.POST.get("Title"),"Complains_Content":request.POST.get("Content")}
+        db.collection("tbl_Complains").add(data)
+        return redirect("webuser:Complains")
+    else:
+        return render(request,"Worker/Complains.html",{"Complains":com_data})
+
+def MyProfile(request):
+    Worker=db.collection("tbl_Worker").document(request.session["wid"]).get().to_dict()
+    return render(request,"Worker/MyProfile.html",{"Worker":Worker})
+
+def EditProfile(request):
+    Worker=db.collection("tbl_Worker").document(request.session["wid"]).get().to_dict()
+    if request.method=="POST":
+        data={"Worker_Name":request.POST.get("Name"),"Worker_Email":request.POST.get("Email"),"Worker_Contact":request.POST.get("Contact")}
+        db.collection("tbl_Worker").document(request.session["wid"]).update(data)
+        return redirect("webuser:MyProfile")
+    else:
+        return render(request,"Worker/EditProfile.html",{"Worker":Worker})
+
+
+def ChangePassword(request):
+    Worker = db.collection("tbl_Worker").document(request.session["wid"]).get().to_dict()
+    email = Worker["Worker_Email"]
+    password_link = firebase_admin.auth.generate_password_reset_link(email) 
+    send_mail(
+    'Reset your password ', 
+    "\rHello \r\nFollow this link to reset your Project password for your " + email + "\n" + password_link +".\n If you didn't ask to reset your password, you can ignore this email. \r\n Thanks. \r\n Your D MARKET user.",#body
+    settings.EMAIL_HOST_USER,
+    [email],
+    )
+    return render(request,"Worker/Homepage.html",{"msg":email})
+
+
 def Homepage(request):
     return render(request,"Worker/Homepage.html")
 
