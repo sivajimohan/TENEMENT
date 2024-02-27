@@ -5,7 +5,7 @@ import pyrebase
 from django.core.mail import send_mail
 from django.conf import settings
 from django.contrib import messages
-
+from datetime import date,datetime
 # Create your views here.
 db=firestore.client()
 config = {
@@ -26,8 +26,7 @@ st = firebase.storage()
 
 def user(request):
     return render(request,"User/User.html")
-def request(request):
-    return render(request,"User/Request.html")
+
 def review(request):
     return render(request,"User/Review.html")
 def Complains(request):
@@ -72,4 +71,28 @@ def ChangePassword(request):
 
 def Homepage(request):
     return render(request,"User/Homepage.html")
+
+def ViewWork(request):
+    w=db.collection("tbl_work").stream()
+    w_data=[]
+    for i in w:
+        data=i.to_dict()
+        w_data.append({"w":data,"id":i.id})
+        return render(request,"User/ViewWork.html",{"work":w_data})
+
+
+def Worker(request,id):
+    data={"worker_id":id,"user_id":request.session["uid"],"request_status":0} 
+    db.collection("tbl_request").add(data)
+    return render(request,"Worker/Worker.html")
+
+def workreq(request):
+    if request.method=="POST":
+        datedata=date.today()
+        data={"user_id":request.session["uid"],"Details":request.POST.get("details"),"for_date":request.POST.get("fordate"),"request_date":str(datedata)}
+        db.collection("tbl_request").add(data)
+        return redirect("webuser:workreq")  
+    else:
+        return render(request,"User/request.html")
+
 
