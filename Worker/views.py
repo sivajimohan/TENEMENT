@@ -86,5 +86,17 @@ def ChangePassword(request):
 def Homepage(request):
     return render(request,"Worker/Homepage.html")
 
+def viewreq(request):
+    req=db.collection("tbl_request").where("request_status","==",0).stream()
+    req_data=[]
+    for i in req:
+        data=i.to_dict()
+        user=db.collection("tbl_User").document(data["User_id"]).get().to_dict()
+        work=db.collection("tbl_work").document(data["work_id"]).get().to_dict()
+        req_data.append({"view":data,"id":i.id,"user":user,"work":work})
+    print(req_data)
+        
+    return render(request,"Worker/Viewrequest.html",{"view":req_data})
+
 
 

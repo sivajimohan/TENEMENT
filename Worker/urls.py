@@ -12,4 +12,5 @@ urlpatterns = [
     path ('ChangePassword/',views.ChangePassword,name="ChangePassword"), 
     path ('EditProfile/',views.EditProfile,name="EditProfile"),
     path ('Homepage/',views.Homepage,name="Homepage"),
+    path('viewreq/',views.viewreq,name="viewreq"),
 ]
