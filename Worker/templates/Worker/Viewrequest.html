@@ -14,11 +14,23 @@
                     <td>Contact</td>
                     <td>Address</td>
                     <td>Work</td>
+                    <td>Details</td>
+                    <td>For Date</td>
+                    <td>Status</td>
+                    <td>Action</td>
 
             </tr>
             {% for i in view %}
-            <td>{{i.user.User_Name}}</td>
             <tr>
+                <td>{{i.user.User_Name}}</td>
+                <td>{{i.user.User_Contact}}</td>
+                <td>{{i.user.User_Address}}</td>
+                <td>{{i.view.title_name}}</td>
+                <td>{{i.view.Details}}</td>
+                <td>{{i.view.for_date}}</td>
+                <td>{{i.view.request_status}}</td>
+                <td><a href="{% url 'webworker:accept' i.id %}">Accept</a></td>
+                <td><a href="{% url 'webworker:reject' i.id %}">Reject</a></td>
 
             </tr>
             {% endfor %}

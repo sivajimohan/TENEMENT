@@ -13,4 +13,11 @@ urlpatterns = [
     path ('EditProfile/',views.EditProfile,name="EditProfile"),
     path ('Homepage/',views.Homepage,name="Homepage"),
     path('viewreq/',views.viewreq,name="viewreq"),
+    path('accept/<str:id>',views.accept,name="accept"),
+    path('reject/<str:id>',views.reject,name="reject"),
+    
+    
+    
+
+
 ]

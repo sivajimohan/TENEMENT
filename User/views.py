@@ -78,7 +78,7 @@ def ViewWork(request):
     for i in w:
         data=i.to_dict()
         w_data.append({"w":data,"id":i.id})
-        return render(request,"User/ViewWork.html",{"work":w_data})
+    return render(request,"User/ViewWork.html",{"work":w_data})
 
 
 def Worker(request,id):
@@ -86,13 +86,17 @@ def Worker(request,id):
     db.collection("tbl_request").add(data)
     return render(request,"Worker/Worker.html")
 
-def workreq(request):
+def workreq(request,id):
     if request.method=="POST":
         datedata=date.today()
-        data={"user_id":request.session["uid"],"Details":request.POST.get("details"),"for_date":request.POST.get("fordate"),"request_date":str(datedata)}
+        data={"work_id":id,"user_id":request.session["uid"],"Details":request.POST.get("details"),"for_date":request.POST.get("fordate"),"request_date":str(datedata),"request_status":0}
         db.collection("tbl_request").add(data)
-        return redirect("webuser:workreq")  
+        return redirect("webuser:ViewWork")  
     else:
         return render(request,"User/request.html")
+
+
+def myreq(request):
+    return render(request,"User/MyRequest.html")
 
 
