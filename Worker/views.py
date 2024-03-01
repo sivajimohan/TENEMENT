@@ -2,7 +2,9 @@ from django.shortcuts import render,redirect
 import firebase_admin 
 from firebase_admin import firestore,credentials,storage,auth
 import pyrebase
-
+from django.core.mail import send_mail
+from django.conf import settings
+from django.contrib import messages
 
 # Create your views here.
 
@@ -31,7 +33,7 @@ def work(request):
             path="WorkPhoto/"+image.name
             st.child(path).put(image)
             p_url=st.child(path).get_url(None)
-        data={"title_name":request.POST.get("title"),"description_name":request.POST.get("description"),"work_photo":p_url}
+        data={"title_name":request.POST.get("title"),"description_name":request.POST.get("description"),"work_photo":p_url,"amount":request.POST.get("amount")}
         db.collection("tbl_work").add(data)
         return redirect("webworker:work")
     else:
@@ -92,16 +94,34 @@ def viewreq(request):
     for i in req:
         data=i.to_dict()
         user=db.collection("tbl_User").document(data["user_id"]).get().to_dict()
-        
-        req_data.append({"view":data,"id":i.id,"user":user})
+        work = db.collection("tbl_work").document(data["work_id"]).get().to_dict()
+        req_data.append({"view":data,"id":i.id,"user":user,"work":work})
     return render(request,"Worker/Viewrequest.html",{"view":req_data})
 
 
 
 def accept(request,id):
     req=db.collection("tbl_request").document(id).update({"request_status":1})
+    user = db.collection("tbl_User").document(request.session["uid"]).get().to_dict()
+    email = user["User_Email"]
+    send_mail(
+    'Service Booking', 
+    "\rHello \r\n Your service booking has accepted our technishian will  contact you",#body
+    settings.EMAIL_HOST_USER,
+    [email],
+    )   
     return redirect("webworker:viewreq")
+    
 
 def reject(request,id):
     req=db.collection("tbl_request").document(id).update({"request_status":2})
+    user = db.collection("tbl_User").document(request.session["uid"]).get().to_dict()
+    email = user["User_Email"]
+    send_mail(
+    'Service Booking', 
+    "\rHello \r\n Your service booking has rejected",#body
+    settings.EMAIL_HOST_USER,
+    [email],
+    )   
+    return redirect("webworker:viewreq")
     return redirect("webworker:viewreq")    

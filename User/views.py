@@ -89,14 +89,20 @@ def Worker(request,id):
 def workreq(request,id):
     if request.method=="POST":
         datedata=date.today()
-        data={"work_id":id,"user_id":request.session["uid"],"Details":request.POST.get("details"),"for_date":request.POST.get("fordate"),"request_date":str(datedata),"request_status":0}
+        work = db.collection("tbl_work").document(id).get().to_dict()
+        data={"work_id":id,"user_id":request.session["uid"],"Details":request.POST.get("details"),"for_date":request.POST.get("fordate"),"request_date":str(datedata),"request_status":0,"amount":work["amount"]}
         db.collection("tbl_request").add(data)
         return redirect("webuser:ViewWork")  
-    else:
+    else: 
         return render(request,"User/request.html")
 
 
 def myreq(request):
-    return render(request,"User/MyRequest.html")
+    ser=db.collection("tbl_request").stream()
+    ser_data=[]
+    for i in ser:
+        data=i.to_dict()
+        ser_data.append({"view":data,"id":i.id})
+    return render(request,"User/MyRequest.html",{"view":ser_data})
 
 

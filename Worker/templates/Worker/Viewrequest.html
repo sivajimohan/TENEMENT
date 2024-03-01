@@ -8,12 +8,13 @@
 <body>
     <form action="" method="post">
         {% csrf_token  %}
-        <table>
+        <table cellpadding="10">
             <tr>
                     <td>User Name</td>
                     <td>Contact</td>
                     <td>Address</td>
                     <td>Work</td>
+                    <td>Amount</td>
                     <td>Details</td>
                     <td>For Date</td>
                     <td>Status</td>
@@ -25,7 +26,8 @@
                 <td>{{i.user.User_Name}}</td>
                 <td>{{i.user.User_Contact}}</td>
                 <td>{{i.user.User_Address}}</td>
-                <td>{{i.view.title_name}}</td>
+                <td>{{i.work.title_name}}</td>
+                <td>{{i.work.amount}}</td>
                 <td>{{i.view.Details}}</td>
                 <td>{{i.view.for_date}}</td>
                 <td>{{i.view.request_status}}</td>
