@@ -29,18 +29,27 @@ def user(request):
 
 def review(request):
     return render(request,"User/Review.html")
+
 def Complains(request):
-    com=db.collection("tbl_Complains").stream()
+    com=db.collection("tbl_Complains").where("user_id","==",request.session["uid"]).stream()
     com_data=[]
     for i in com:
         data=i.to_dict()
         com_data.append({"com":data,"id":i.id})
+        # print(com_data)
     if request.method=="POST":
-        data={"Complains_name":request.POST.get("Title"),"Complains_Content":request.POST.get("Content")}
+        datedata=date.today()
+        data={"Complains_name":request.POST.get("Title"),"Complains_Content":request.POST.get("Content"),"user_id":request.session["uid"],"worker_id":0,"complaint_status":0,"complains_date":str(datedata)}
         db.collection("tbl_Complains").add(data)
         return redirect("webuser:Complains")
     else:
-        return render(request,"User/Complains.html",{"Complains":com_data})
+        return render(request,"User/Complains.html",{"com":com_data})
+
+def delComplains(request,id):
+    com=db.collection("tbl_Complains").document(id).delete()
+    return redirect("webuser:Complains")
+
+
 
 def MyProfile(request):
     User=db.collection("tbl_User").document(request.session["uid"]).get().to_dict()
@@ -105,4 +114,15 @@ def myreq(request):
         ser_data.append({"view":data,"id":i.id})
     return render(request,"User/MyRequest.html",{"view":ser_data})
 
+def payment(request,id):
+    if request.method == "POST":
+        req = db.collection("tbl_request").document(id).update({"request_status":3})
+        return redirect("webuser:loader")
+    else:
+        return render(request,"User/Payment.html")
 
+def loader(request):
+    return render(request,"User/Loader.html")
+
+def paymentsuc(request):
+    return render(request,"User/Payment_suc.html")

@@ -20,5 +20,22 @@
         </table>
         <button type="submit">Add</button>
     </form>
+
+    <table>
+        <tr>
+            <td>#</td>
+            <td>Title</td>
+            <td>Content</td>
+            <td>Action</td>
+        </tr>
+        {% for i in com %}
+        <tr>
+            <td>{{forloop.counter}}</td>
+            <td>{{i.com.Complains_name}}</td>
+            <td>{{i.com.Complains_Content}}</td>
+            <td><a href="{% url 'webworker:delComplains' i.id %}">Delete</a></td>
+        </tr>
+        {% endfor %}
+    </table>
 </body>
 </html>

@@ -7,4 +7,5 @@ urlpatterns=[
     path('UserRegistration/',views.UserRegistration,name="UserRegistration"),
     path('AjaxPlace/',views.AjaxPlace,name="AjaxPlace"),
     path('WorkerRegistration/',views.WorkerRegistration,name="WorkerRegistration"),
+    path('index/',views.index,name="index"),
 ]

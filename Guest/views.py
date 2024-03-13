@@ -77,7 +77,7 @@ def UserRegistration(request):
             st.child(path).put(image)
             cp_url=st.child(path).get_url(None)
         db.collection("tbl_User").add({"User_id":User.uid,"User_Name":request.POST.get("Name"),"User_Email":request.POST.get("Email"),"User_Contact":request.POST.get("Contact"),"User_Address":request.POST.get("Address"),"place_id":request.POST.get("place"),"User_Photo":cp_url})
-        return render(request,"Guest/UserRegistration.html")
+        return render(request,"Guest/index.html")
     else:    
         return render(request,"Guest/UserRegistration.html",{"district":dis_data})    
 
@@ -113,3 +113,5 @@ def WorkerRegistration(request):
     else:    
         return render(request,"Guest/WorkerRegistration.html",{"district":dis_data})    
 
+def index(request):
+    return render(request,"Guest/index.html")

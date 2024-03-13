@@ -6,6 +6,7 @@ urlpatterns = [
     path ('workreq/<str:id>',views.workreq,name="workreq"),
     path ('review/',views.review,name="review"),
     path ('Complains/',views.Complains,name="Complains"),
+    path ('delComplains/<str:id>',views.delComplains,name="delComplains"),
     path ('Homepage/',views.Homepage,name="Homepage"),
     path ('MyProfile/',views.MyProfile,name="MyProfile"),
     path ('ChangePassword/',views.ChangePassword,name="ChangePassword"),
@@ -13,5 +14,9 @@ urlpatterns = [
     path ('ViewWork/',views.ViewWork,name="ViewWork"),
     path ('Worker/<str:id>',views.Worker,name="Worker"),
     path ('myreq/',views.myreq,name="myreq"),
+
+    path('payment/<str:id>',views.payment,name="payment"),
+    path('loader/',views.loader,name="loader"),
+    path('paymentsuc/',views.paymentsuc,name="paymentsuc"),
 
 ]

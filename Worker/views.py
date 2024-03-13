@@ -5,6 +5,7 @@ import pyrebase
 from django.core.mail import send_mail
 from django.conf import settings
 from django.contrib import messages
+from datetime import date,datetime
 
 # Create your views here.
 
@@ -52,11 +53,18 @@ def Complains(request):
         data=i.to_dict()
         com_data.append({"com":data,"id":i.id})
     if request.method=="POST":
-        data={"Complains_name":request.POST.get("Title"),"Complains_Content":request.POST.get("Content")}
+        datedata=date.today()
+        data={"Complains_name":request.POST.get("Title"),"Complains_Content":request.POST.get("Content"),"user_id":0,"worker_id":request.session["wid"],"complaint_status":0,"complains_date":str(datedata)}
         db.collection("tbl_Complains").add(data)
-        return redirect("webuser:Complains")
+        return redirect("webworker:Complains")
     else:
-        return render(request,"Worker/Complains.html",{"Complains":com_data})
+        return render(request,"Worker/Complains.html",{"com":com_data})
+
+
+def delComplains(request,id):
+    com=db.collection("tbl_Complains").document(id).delete()
+    return redirect("webworker:Complains")
+
 
 def MyProfile(request):
     Worker=db.collection("tbl_Worker").document(request.session["wid"]).get().to_dict()
