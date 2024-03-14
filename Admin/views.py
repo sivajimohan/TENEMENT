@@ -96,3 +96,63 @@ def admin(request):
     return render(request,"Admin/Admin.html")
 
 
+def viewcomplaint(request):
+   
+        
+        user_data=[]
+        worker_data=[]
+        wcom = db.collection("tbl_Complains").where("Worker_id", "!=","").where("complaint_status", "==", 0).stream()
+        for i in wcom:
+            wdata = i.to_dict()
+            worker = db.collection("tbl_Worker").document(wdata["Worker_id"]).get().to_dict()
+            worker_data.append({"complaint":i.to_dict(),"id":i.id,"worker":worker})
+
+        ucom=db.collection("tbl_Complains").where("User_id","!=","").where("complaint_status","==",0).stream()
+        for i in ucom:
+            udata = i.to_dict()
+            user = db.collection("tbl_User").document(udata["User_id"]).get().to_dict()
+            user_data.append({"complaint":i.to_dict(),"id":i.id,"user":user})  
+        return render(request,"Admin/ViewComplaints.html",{"worker":worker_data,"user":user_data})    
+    
+
+def reply(request,id):
+    
+    if request.method == "POST":
+            db.collection("tbl_Complains").document(id).update({"complaint_reply":request.POST.get("reply"),"complaint_status":"1"})
+            return render(request,"Admin/Reply.html",{"msg":"Reply Sended..."})
+    return render(request,"Admin/Reply.html")    
+    
+def viewworker(request):
+    worker=db.collection("tbl_Worker").where("worker_status","==",0).stream()
+    worker_data=[]
+    for i in worker:
+        data=i.to_dict()
+        worker_data.append({"worker":data,"id":i.id})
+    return render(request,"Admin/ViewWorker.html",{"worker":worker_data})
+
+def accept(request,id):
+    db.collection("tbl_Worker").document(id).update({"worker_status":1})
+    return redirect("webadmin:accepted")   
+
+def reject(request,id):
+    db.collection("tbl_Worker").document(id).update({"worker_status":2})
+    return redirect("webadmin:rejected")   
+
+
+def accepted(request):
+    worker=db.collection("tbl_Worker").where("worker_status","==",1).stream()
+    worker_data=[]
+    for i in worker:
+        data=i.to_dict()
+        worker_data.append({"worker":data,"id":i.id})
+    return render(request,"Admin/AcceptedWorker.html",{"worker":worker_data})
+
+def rejected(request):
+    worker=db.collection("tbl_Worker").where("worker_status","==",2).stream()
+    worker_data=[]
+    for i in worker:
+        data=i.to_dict()
+        worker_data.append({"worker":data,"id":i.id})
+    return render(request,"Admin/RejectedWorker.html",{"worker":worker_data})
+
+      

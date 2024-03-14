@@ -1,0 +1,58 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+<form action="" method="post">
+        {% csrf_token %}
+    <table>
+       
+        <tr>
+            <td>#</td>
+            <td>Worker Name</td>
+            <td>Content</td>
+            <td>Title</td>
+            <td>Date</td>
+            <td>Action</td>
+        </tr>
+        {% for i in worker %}
+        <tr>
+            <td>{{forloop.counter}}</td>
+            <td>{{i.worker.Worker_Name}}</td>
+            <td>{{i.complaint.Complains_Content}}</td>
+            <td>{{i.complaint.Complains_name}}</td>
+            <td>{{i.complaint.complaint_date}}</td>
+            <td><a href="{% url 'webadmin:reply' i.id%}">Reply</a></td>
+        </tr>
+        {% endfor %}
+    </table>
+    <table>
+       
+        <tr>
+            <td>#</td>
+            <td>User Name</td>
+            <td>Title</td>
+            <td>Content</td>
+            <td>Date</td>
+            <td>Action</td>
+            
+        </tr>
+        {% for i in user %}
+        <tr>
+            <td>{{forloop.counter}}</td>
+            <td>{{i.user.User_Name}}</td>
+            <td>{{i.complaint.Complains_Content}}</td>
+            <td>{{i.complaint.Complains_name}}</td>
+            <td>{{i.complaint.complaint_date}}</td>
+            <td><a href="{% url 'webadmin:reply' i.id%}">Reply</a></td>
+        </tr>
+        {% endfor %}
+    </table>
+    
+</form>
+</body>
+</html>

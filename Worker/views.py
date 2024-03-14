@@ -47,14 +47,14 @@ def Workgallery(request):
     return render(request,"Worker/Workgallery.html")
 
 def Complains(request):
-    com=db.collection("tbl_Complains").stream()
+    com=db.collection("tbl_Complains").where("Worker_id","==",request.session["wid"]).stream()
     com_data=[]
     for i in com:
         data=i.to_dict()
         com_data.append({"com":data,"id":i.id})
     if request.method=="POST":
         datedata=date.today()
-        data={"Complains_name":request.POST.get("Title"),"Complains_Content":request.POST.get("Content"),"user_id":0,"worker_id":request.session["wid"],"complaint_status":0,"complains_date":str(datedata)}
+        data={"Complains_name":request.POST.get("Title"),"Complains_Content":request.POST.get("Content"),"User_id":"","Worker_id":request.session["wid"],"complaint_status":0,"complaint_date":str(datedata)}
         db.collection("tbl_Complains").add(data)
         return redirect("webworker:Complains")
     else:
@@ -132,4 +132,12 @@ def reject(request,id):
     [email],
     )   
     return redirect("webworker:viewreq")
-    return redirect("webworker:viewreq")    
+    
+
+def viewreply(request):
+    com = db.collection("tbl_Complains").where("Worker_id", "==", request.session["wid"]).stream()
+    com_data = []
+    for c in com:
+        com_data.append({"complaint":c.to_dict(),"id":c.id})
+    return render(request,"Worker/ViewReply.html",{"com":com_data})
+      

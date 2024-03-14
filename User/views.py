@@ -31,15 +31,15 @@ def review(request):
     return render(request,"User/Review.html")
 
 def Complains(request):
-    com=db.collection("tbl_Complains").where("user_id","==",request.session["uid"]).stream()
+    com=db.collection("tbl_Complains").where("User_id","==",request.session["uid"]).stream()
     com_data=[]
     for i in com:
         data=i.to_dict()
         com_data.append({"com":data,"id":i.id})
-        # print(com_data)
+        
     if request.method=="POST":
         datedata=date.today()
-        data={"Complains_name":request.POST.get("Title"),"Complains_Content":request.POST.get("Content"),"user_id":request.session["uid"],"worker_id":0,"complaint_status":0,"complains_date":str(datedata)}
+        data={"Complains_name":request.POST.get("Title"),"Complains_Content":request.POST.get("Content"),"User_id":request.session["uid"],"Worker_id":"","complaint_status":0,"complaint_date":str(datedata)}
         db.collection("tbl_Complains").add(data)
         return redirect("webuser:Complains")
     else:
@@ -126,3 +126,12 @@ def loader(request):
 
 def paymentsuc(request):
     return render(request,"User/Payment_suc.html")
+
+
+def viewreply(request):
+    com = db.collection("tbl_Complains").where("User_id", "==", request.session["uid"]).stream()
+    com_data = []
+    for c in com:
+        com_data.append({"complaint":c.to_dict(),"id":c.id})
+    return render(request,"User/ViewReply.html",{"com":com_data})
+      

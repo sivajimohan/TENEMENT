@@ -39,12 +39,19 @@ def Login(request):
         worker=db.collection("tbl_Worker").where("Worker_id","==",data["localId"]).stream()    
         for w in worker:
             Workerid=w.id  
+            worker=w.to_dict()
+            worker_status = worker["worker_status"] 
         user=db.collection("tbl_User").where("User_id","==",data["localId"]).stream()    
         for u in user:
             userid=u.id
         if Workerid:
-            request.session["wid"]=Workerid    
-            return redirect("webworker:Homepage")
+            if worker_status ==  2:
+                return render(request,"Guest/Login.html",{"msg":"Your Request is Rejected"})
+            elif worker_status == 0:
+                return render(request,"Guest/Login.html",{"msg":"Your Request is Pending...."})
+            else:
+                request.session["wid"]=Workerid 
+                return redirect("webworker:Homepage")   
         elif userid:
             request.session["uid"]=userid
             return redirect("webuser:Homepage")   
@@ -108,7 +115,12 @@ def WorkerRegistration(request):
             path="WorkerPhoto/"+image.name
             st.child(path).put(image)
             wp_url=st.child(path).get_url(None)
-        db.collection("tbl_Worker").add({"Worker_id":Worker.uid,"Worker_Name":request.POST.get("Name"),"Worker_Email":request.POST.get("Email"),"Worker_Contact":request.POST.get("Contact"),"Worker_Address":request.POST.get("Address"),"place_id":request.POST.get("place"),"Worker_Photo":wp_url})
+        Proof=request.FILES.get("Proof")
+        if Proof:
+            path="WorkerProof/"+Proof.name
+            st.child(path).put(image)
+            wpr_url=st.child(path).get_url(None)    
+        db.collection("tbl_Worker").add({"Worker_id":Worker.uid,"Worker_Name":request.POST.get("Name"),"Worker_Email":request.POST.get("Email"),"Worker_Contact":request.POST.get("Contact"),"Worker_Address":request.POST.get("Address"),"place_id":request.POST.get("place"),"Worker_Photo":wp_url,"Worker_Proof":wpr_url,"worker_status":0})
         return render(request,"Guest/WorkerRegistration.html")
     else:    
         return render(request,"Guest/WorkerRegistration.html",{"district":dis_data})    

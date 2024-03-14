@@ -14,6 +14,7 @@ urlpatterns = [
     path ('ViewWork/',views.ViewWork,name="ViewWork"),
     path ('Worker/<str:id>',views.Worker,name="Worker"),
     path ('myreq/',views.myreq,name="myreq"),
+     path('viewreply/',views.viewreply,name="viewreply"),
 
     path('payment/<str:id>',views.payment,name="payment"),
     path('loader/',views.loader,name="loader"),

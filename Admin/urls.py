@@ -10,5 +10,12 @@ urlpatterns = [
     path ('Place/',views.Place,name="Place"),
     path('delPlace/<str:id>',views.delPlace,name="delPlace"),
     path ('admin/',views.admin,name="admin"),
+    path('ViewComplaint/',views.viewcomplaint,name="viewcomplaint"),
     path ('homepage/',views.Homepage,name="homepage"),
+    path('Reply/<str:id>',views.reply,name="reply"),
+    path('viewworker/',views.viewworker,name="viewworker"),
+    path('accept/<str:id>',views.accept,name="accept"),
+    path('reject/<str:id>',views.reject,name="reject"),
+    path('accepted/',views.accepted,name="accepted"),
+    path('rejected/',views.rejected,name="rejected"),
 ]
