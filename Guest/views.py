@@ -57,7 +57,7 @@ def Login(request):
             return redirect("webuser:Homepage")   
         elif adminid:
             request.session["aid"]=adminid 
-            return redirect("webadmin:Homepage")  
+            return redirect("webadmin:homepage")  
         else:
             return render(request,"Guest/Login.html",{"msg":"error"})    
     else:

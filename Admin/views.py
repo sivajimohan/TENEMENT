@@ -93,7 +93,18 @@ def Homepage(request):
 
 
 def admin(request):
-    return render(request,"Admin/Admin.html")
+    if request.method =="POST":
+        email = request.POST.get("email")
+        password = request.POST.get("password")
+        try:
+            admin = firebase_admin.auth.create_user(email=email,password=password)
+        except (firebase_admin._auth_utils.EmailAlreadyExistsError,ValueError) as error:
+            return render(request,"Admin/Admin.html",{"msg":error})
+        db.collection("tbl_admin").add({"admin_id":admin.uid,"admin_name":request.POST.get("name"),"admin_email":request.POST.get("email")})    
+        return render(request,"Admin/Admin.html")
+    else:
+        return render(request,"Admin/Admin.html")
+    
 
 
 def viewcomplaint(request):
